@@ -1,0 +1,37 @@
+<% include partials/header%>
+<div class="container">
+    <div class="row text-center">
+        
+        <div style="width:30%; margin: 27px auto;">
+            <h3>Add product for auction</h3><br>
+           
+            <form action = "/products" method = "POST">
+                <div class="form-group">
+                    <input type="text" name = "prod_name" placeholder="Enter product name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" name = "prod_base_price" min = 1000 placeholder="Enter base price" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <textarea name= "prod_desc" placeholder="Enter product description.." class="form-control" required></textarea>
+                </div>
+                <div class="form-group" >
+                    <select name="prod_category"class="form-control" required>
+                        <option value="">--Choose Category--</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="others">Others</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-block btn-primary btn-lg"> Add Product</button>
+            </form> 
+                        
+            
+        </div>
+    </div>
+    
+</div>
+
+

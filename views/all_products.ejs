@@ -1,0 +1,16 @@
+<% include partials/header%>
+
+<h2>All products for auction</h2> 
+
+<div>
+    <a href="/products/new">Add new product</a>
+</div>
+
+<ul>
+    <% products.forEach(function(product){ %>
+        <li >
+            name : <%=product.prod_name%>, base price : <%=product.prod_base_price%>
+            <button><a href="/products/<%= product._id %>">More Info</a></button>
+        </li>
+    <% });%>
+</ul>

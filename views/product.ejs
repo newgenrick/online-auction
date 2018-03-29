@@ -1,0 +1,27 @@
+<% include partials/header%>
+
+<h3>
+    <%=product.prod_name%>
+</h3>
+<div >
+    name : <%=product.prod_name%> <br>
+    base price : <%=product.prod_base_price%> <br>
+    current price : <strong><%=product.prod_current_price%></strong><br><br><br>
+    
+        <button><a href="/products/<%= product._id %>/edit">Edit Product</a></button>
+        <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;">
+            <button type="submit">Delete product</button>
+        </form><br><br><br>
+        <form action = "/bid/<%= product._id%>?_method=PUT" method="POST">
+            <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required>
+            <button type="submit">Place Bid</button>
+        </form>
+        
+        <%if(product.prod_bidder_list.length){%>
+            <h3>Bid register : </h3>
+            <% for(var i=product.prod_bidder_list.length-1;i>=0;i--){%>
+                <li>Bidder ID : <%=product.prod_bidder_list[i]%> Bid Value : <%=product.prod_bid_values[i]%> </li>
+            <% }%>
+        <% }%>
+    
+</div>

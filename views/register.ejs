@@ -1,0 +1,36 @@
+<% include partials/header%>
+
+<div class="container">
+    <div class="row text-center">
+        
+        <div style="width:30%; margin: 27px auto;">
+            <h2>Register form</h2>
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder = "username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="e-mail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="type password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="rpassword" placeholder="re-type password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" name="deposit" placeholder="deposit amount" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" name="tnc" required>&nbsp;&nbsp;&nbsp;I agree to <a href="#"> terms and conditions</a></input>
+                </div>
+                
+                <button type="submit" class="btn btn-block btn-primary btn-lg"> Register Now </button>
+            </form>
+            
+        </div>
+    </div>
+    
+</div>
+
+

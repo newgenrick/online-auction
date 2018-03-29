@@ -1,0 +1,14 @@
+<% include partials/header%>
+
+<link rel = "stylesheet" href = "home.css"></link>
+<h2>Welcome to online auction.</h2>
+<a href="/products">See all products</a><br>
+<a href = "/products/new">Add new products</a><br>
+
+<% if(!currentUser){ %>
+    <a href="/login">login</a><br>
+    <a href="/register">Sign Up</a>
+<% }else{ %>
+    <a href="#">Signed in as <%= currentUser.username%></a><br>
+    <a href="/logout">Logout</a>
+<% } %>
