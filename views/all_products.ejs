@@ -1,16 +1,39 @@
 <% include partials/header%>
-
-<h2>All products for auction</h2> 
-
-<div>
-    <a href="/products/new">Add new product</a>
+<div class="container text-center">
+    <h2>All products for auction</h2> 
+    <hr>
+    <div class="card text-center">
+      
+      <div class="card-body">
+        <h5 class="card-title">Add product for Auction <span class="badge badge-secondary">New</span></h5>
+        <p class="card-text">Get rid of hassle and stress of hosting offline auctions for your products.
+                            Now have access to our transparent online auction system where for FREE .</p>
+        <a href="/products/new" class="btn btn-success">Add new Product</a>
+      </div>
+      <div class="card-footer text-muted">
+        <a href="#">Terms and conditions</a>
+      </div>
+    </div>
+    <br><br>
+    
+        <hr>
+        <div class="row">
+    
+        <% products.forEach(function(product){ %>
+            
+                <div class="col-sm-4">
+                    <div class="card" >
+                      <img class="card-img-top" src= <%= product.prod_image_link%> alt="Card image cap">
+                      <div class="card-body">
+                        <h5 class="card-title"><%=product.prod_name%></h5>
+                        <p class="card-text"><%=product.prod_desc%></p>
+                        <a href="/products/<%= product._id %>" class="btn btn-primary">More Info</a>
+                      </div>
+                    </div>
+                </div>
+            
+            
+        <% });%>
+        </div>
+    
 </div>
-
-<ul>
-    <% products.forEach(function(product){ %>
-        <li >
-            name : <%=product.prod_name%>, base price : <%=product.prod_base_price%>
-            <button><a href="/products/<%= product._id %>">More Info</a></button>
-        </li>
-    <% });%>
-</ul>

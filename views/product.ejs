@@ -1,27 +1,53 @@
 <% include partials/header%>
 
-<h3>
-    <%=product.prod_name%>
-</h3>
-<div >
-    name : <%=product.prod_name%> <br>
-    base price : <%=product.prod_base_price%> <br>
-    current price : <strong><%=product.prod_current_price%></strong><br><br><br>
-    
-        <button><a href="/products/<%= product._id %>/edit">Edit Product</a></button>
-        <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;">
-            <button type="submit">Delete product</button>
-        </form><br><br><br>
-        <form action = "/bid/<%= product._id%>?_method=PUT" method="POST">
-            <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required>
-            <button type="submit">Place Bid</button>
-        </form>
+
+<div class="container">
+    <h3>
+        <%=product.prod_name%>
+    </h3>
+    <hr>
+    <div >
+            name : <%=product.prod_name%> <br>
+            base price : <%=product.prod_base_price%> <br>
+            current price : <strong><%=product.prod_current_price%></strong><br><br><br>
         
-        <%if(product.prod_bidder_list.length){%>
-            <h3>Bid register : </h3>
-            <% for(var i=product.prod_bidder_list.length-1;i>=0;i--){%>
-                <li>Bidder ID : <%=product.prod_bidder_list[i]%> Bid Value : <%=product.prod_bid_values[i]%> </li>
+            <button><a href="/products/<%= product._id %>/edit">Edit Product</a></button>
+            <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;">
+                <button type="submit">Delete product</button>
+            </form><br><br><br>
+            <form action = "/bid/<%= product._id%>?_method=PUT" method="POST">
+                <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required>
+                <button type="submit">Place Bid</button>
+            </form>
+            
+            <%if(product.prod_bidder_list.length){%>
+                <br><br>
+                <h3>Bid Register</h3>
+                <hr>
+                <table class="table table-striped text-center">
+                  <thead>
+                    <tr>
+                      <th scope="col">Sl No.</th>
+                      <th scope="col">Bidder ID</th>
+                      <th scope="col">Bid Amount</th>
+                      <th scope="col">Time Stamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(var i=product.prod_bidder_list.length-1;i>=0;i--){%>
+                        
+                        <tr>
+                          <th scope="row"><%=product.prod_bidder_list.length-i%></th>
+                          <td> <%=product.prod_bidder_list[i]%></td>
+                          <td> <%=product.prod_bid_values[i]%> </td>
+                          <td> <%=product.prod_bid_time[i]%></td>
+                        </tr>
+                    <% }%>
+                    
+                    
+                  </tbody>
+                </table>
             <% }%>
-        <% }%>
-    
+    </div>
 </div>
+

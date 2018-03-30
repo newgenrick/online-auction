@@ -28,7 +28,9 @@ var productSchema = new mongoose.Schema({
     prod_owner_id: String,
     prod_bidder_list : [String],
     prod_bid_values: [Number],
-    prod_desc:String
+    prod_bid_time:[Date],
+    prod_desc:String,
+    prod_image_link:String
     
 });
 
@@ -52,7 +54,8 @@ var userSchema = new mongoose.Schema({
                 ref: "Product"
             }
         ],
-    my_bid_values: [Number]
+    my_bid_values: [Number],
+    my_bid_time:[Date]
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -134,7 +137,9 @@ app.post("/products",isLoggedIn,function(req,res){
         prod_base_price : req.body.prod_base_price,
         prod_current_price : req.body.prod_base_price,
         prod_owner_id: req.user._id,
-        prod_desc: req.body.prod_desc
+        prod_desc: req.body.prod_desc,
+        prod_image_link: req.body.prod_image_link,
+        prod_category: req.body.prod_category
     },function(err,product){
         if(err){
             console.log("Error creating the product");
@@ -203,7 +208,9 @@ app.put("/products/:id",checkOwnership,function(req,res){
         prod_name : req.body.prod_name,
         prod_base_price : req.body.prod_base_price,
         prod_current_price : req.body.prod_base_price,
-        
+        prod_image_link: req.body.prod_image_link,
+        prod_desc:req.body.prod_desc,
+        prod_category: req.body.prod_category
     };
     Product.findByIdAndUpdate(req.params.id,new_product,function(err,updatedProduct){
        if(err){
@@ -276,6 +283,7 @@ app.put("/bid/:id",isLoggedIn,function(req,res){
                         product.prod_current_winner_id = req.user._id;
                         product.prod_bidder_list.push(req.user._id);
                         product.prod_bid_values.push(req.body.bid_value)
+                        product.prod_bid_time.push(new Date());
                         console.log("Unsaved product : " + product)
                         
                         var flag=0;
@@ -291,10 +299,14 @@ app.put("/bid/:id",isLoggedIn,function(req,res){
                         }
                         if(flag==1){
                             user.my_bid_values[i] = req.body.bid_value;
+                            user.my_bid_time[i] = new Date();
                         }else{
                             user.my_bid_products.push(product);
                             user.my_bid_values.push(req.body.bid_value);
+                            user.my_bid_time.push(new Date());
                         }
+                        
+                        
                         
                         User.findByIdAndUpdate(req.user._id,user,function(err,updatedUser){
                             if(err){
