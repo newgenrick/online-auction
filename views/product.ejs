@@ -7,18 +7,41 @@
     </h3>
     <hr>
     <div >
-            name : <%=product.prod_name%> <br>
-            base price : <%=product.prod_base_price%> <br>
-            current price : <strong><%=product.prod_current_price%></strong><br><br><br>
-        
-            <button><a href="/products/<%= product._id %>/edit">Edit Product</a></button>
-            <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;">
-                <button type="submit">Delete product</button>
-            </form><br><br><br>
-            <form action = "/bid/<%= product._id%>?_method=PUT" method="POST">
-                <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required>
-                <button type="submit">Place Bid</button>
-            </form>
+            <div class="row">
+                <div class="col-sm-6">
+                    <img src=<%=product.prod_image_link%> alt="..." class="img-thumbnail">
+                </div>
+                <div class="col-sm-6">
+                    
+                    <strong>Product Name : </strong><%=product.prod_name%> <br>
+                    <strong>Auction Base Price : </strong><%=product.prod_base_price%> <br>
+                    <strong>Current Winning Bid : </strong> <strong><%=product.prod_current_price%></strong><br><br>
+                    <strong>Product Decription : </strong><br>
+                    <%=product.prod_desc%><br><br>
+                    <strong>Auction duration : </strong><%=product.prod_auction_duration%><br>
+                    <strong>Posting time : </strong><%=product.prod_posting_time%><br>
+                    <br><br>
+                    <a href="/products/<%= product._id %>/edit"  class="btn btn-sm btn-warning">Edit Product</a>
+                    <%if(!product.prod_bidder_list.length){%>
+                        <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;" >
+                            <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                        </form>
+                    <% }else{%>
+                            <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                    <% }%>
+                    <br><br><br>
+                    <form action = "/bid/<%= product._id%>?_method=PUT" method="POST" class="form-inline">
+                        <div>
+                            <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required class="form-group"> 
+                        </div>
+                        
+                        <button type="submit" class="btn btn-sm btn-success">Place Bid</button>
+                    </form>
+                </div>
+                
+            </div>
+            
+            
             
             <%if(product.prod_bidder_list.length){%>
                 <br><br>

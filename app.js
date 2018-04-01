@@ -30,7 +30,9 @@ var productSchema = new mongoose.Schema({
     prod_bid_values: [Number],
     prod_bid_time:[Date],
     prod_desc:String,
-    prod_image_link:String
+    prod_image_link:String,
+    prod_posting_time:Date,
+    prod_auction_duration:Number
     
 });
 
@@ -139,7 +141,9 @@ app.post("/products",isLoggedIn,function(req,res){
         prod_owner_id: req.user._id,
         prod_desc: req.body.prod_desc,
         prod_image_link: req.body.prod_image_link,
-        prod_category: req.body.prod_category
+        prod_category: req.body.prod_category,
+        prod_auction_duration: req.body.prod_auction_duration,
+        prod_posting_time: new Date()
     },function(err,product){
         if(err){
             console.log("Error creating the product");
@@ -204,21 +208,37 @@ app.get("/products/:id/edit",checkOwnership,function(req, res) {
 
 
 app.put("/products/:id",checkOwnership,function(req,res){
-    var new_product = {
-        prod_name : req.body.prod_name,
-        prod_base_price : req.body.prod_base_price,
-        prod_current_price : req.body.prod_base_price,
-        prod_image_link: req.body.prod_image_link,
-        prod_desc:req.body.prod_desc,
-        prod_category: req.body.prod_category
-    };
-    Product.findByIdAndUpdate(req.params.id,new_product,function(err,updatedProduct){
-       if(err){
-           console.log(err);
-       }else{
-           res.redirect("/products/"+req.params.id);
-       }
+    var prev_bid,duration;
+    Product.findById(req.params.id,function(err, product) {
+        if(err){
+            console.log(err);
+        }else{
+            console.log("-----------------------------------------------------")
+            prev_bid = product.prod_current_price;
+            console.log(prev_bid)
+            duration = product.prod_auction_duration;
+            var new_product = {
+                prod_name : req.body.prod_name,
+                prod_base_price : req.body.prod_base_price,
+                prod_current_price : prev_bid,
+                prod_image_link: req.body.prod_image_link,
+                prod_desc:req.body.prod_desc,
+                prod_category: req.body.prod_category,
+                prod_auction_duration:duration
+            };
+            new_product.prod_current_price =prev_bid;
+            
+            Product.findByIdAndUpdate(req.params.id,new_product,function(err,updatedProduct){
+               if(err){
+                   console.log(err);
+               }else{
+                   res.redirect("/products/"+req.params.id);
+               }
+            });
+        }
     });
+    console.log(prev_bid);
+    
 });
 
 app.delete("/products/:id",checkOwnership,function(req,res){
@@ -240,7 +260,7 @@ app.delete("/products/:id",checkOwnership,function(req,res){
                             break;
                         }
                     }
-                    if(flag==-1){
+                    if(flag==0){
                         console.log("could not find product in users cart")
                     }else{
                         user.auc_products.splice(i,1);
