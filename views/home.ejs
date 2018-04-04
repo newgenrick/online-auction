@@ -1,14 +1,121 @@
 <% include partials/header%>
-
+<br><br>
 <link rel = "stylesheet" href = "home.css"></link>
-<h2>Welcome to online auction.</h2>
-<a href="/products">See all products</a><br>
-<a href = "/products/new">Add new products</a><br>
 
-<% if(!currentUser){ %>
-    <a href="/login">login</a><br>
-    <a href="/register">Sign Up</a>
-<% }else{ %>
-    <a href="#">Signed in as <%= currentUser.username%></a><br>
-    <a href="/logout">Logout</a>
-<% } %>
+
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    
+  </ol>
+  <div class="carousel-inner" style="height:700px;">
+    <div class="carousel-item active">
+      <img class="d-block w-100" src="https://martechtoday.com/wp-content/uploads/2016/10/auction-bidding-ss-1920.png" alt="Second slide">
+      <div class="carousel-caption d-none d-md-block">
+        <h3>Bid for products online</h3>
+                <hr>
+
+        <p>Bid for products you like at best prices with the comfort of being at your home.</p>
+        <a href="/products" class="btn btn-secondary btn-lg">Goto Live Auctions</a>
+      </div>
+    </div>
+    <div class="carousel-item ">
+      <img class="d-block w-100" src="https://static.vinepair.com/wp-content/uploads/2016/04/wine-auction-inside.png" alt="Second slide">
+      <div class="carousel-caption d-none d-md-block">
+        <h3>Host Auction for your products</h3>
+        <hr>
+        <p>Host transparent auctions for your products with Auction Arena's Automated Auction scheme</p>
+        <a href="/products/new" class="btn btn-success btn-lg">Host Auction!</a>
+      </div>
+    </div>
+    
+    
+  
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+<section class="our-work" style="padding:60px;">
+		<h3 class="title">About Us</h3>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis et ipsum bibendum ultrices. Morbi vitae pulvinar velit. Sed aliquam dictum sapien, id sagittis augue malesuada eu.</p>
+		<hr style="width:200px;height:1px;background-color:#2196F3;">
+
+		
+</section>
+<div class="carousel "  >
+    <img class="" src="https://landofcoder.com/media/resized/1410x571/wysiwyg/extensions/auctionextension/auction1.jpg" alt="Second slide" style="width:100%;" >
+    <div class="carousel-caption " style="color:black;top:20%;">
+        <h3>How it works ?</h3>
+       
+      </div>
+</div>
+
+
+<div class="jumbotron text-center">
+    <h3>Features and Services</h3>
+    <br><br>
+    
+    <div class="container">
+        
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis et ipsum bibendum ultrices. Morbi vitae pulvinar velit. Sed aliquam dictum sapien, id sagittis augue malesuada eu.</p>
+        <br>
+        <hr style="width:200px;height:1px;background-color:#2196F3;">
+        <div class="row">
+            <div class="col-sm-4"> 
+                <h4>Host Auction</h4>
+            </div>
+            <div class="col-sm-4"> 
+                <h4>Transparent Bidding</h4>
+            </div>
+            <div class="col-sm-4"> 
+                <h4>Ease of use</h4>
+            </div>
+        </div>
+    </div>
+    
+</div>
+	<section class="reviews">
+		<h3 class="title">What others say:</h3>
+
+		<p class="quote">Mauris sit amet mauris a arcu eleifend ultricies eget ut dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+		<p class="author">— Abhishek Awasthi</p>
+
+		<p class="quote">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis et ipsum bibendum ultrices. Morbi vitae pulvinar velit. Sed aliquam dictum sapien, id sagittis augue malesuada eu.</p>
+		<p class="author">— Aman Anupam</p>
+
+		<p class="quote">Donec commodo dolor augue, vitae faucibus tortor tincidunt in. Aliquam vitae leo quis mi pulvinar ornare. Integer eu iaculis metus.</p>
+		<p class="author">— Saket Ringsia</p>
+
+		
+	</section>
+	<section class="contact" style="padding:60px;">
+		<h3 class="title">Subscribe for Auction Updates</h3>	
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id felis et ipsum bibendum ultrices. Morbi vitae pulvinar velit. Sed aliquam dictum sapien, id sagittis augue malesuada eu.</p>
+		<hr>
+
+		<form class="form-inline">
+		    <div class="form-group">
+                <input type="text" name = "email"  placeholder="Enter your mail" class="form-control"  required>
+            </div>
+			
+			<a href="#" class="btn btn-primary btn-md">Subscribe now</a>
+		</form>
+	</section>
+<footer>
+		<ul>
+			<li><a href="#"><i class="fa fa-twitter-square"></i></a></li>
+			<li><a href="#"><i class="fa fa-facebook-square"></i></a></li>
+			<li><a href="#"><i class="fa fa-snapchat-square"></i></a></li>
+			<li><a href="#"><i class="fa fa-pinterest-square"></i></a></li>
+			<li><a href="#"><i class="fa fa-github-square"></i></a></li>
+		</ul>
+		<p>Made by <a href="https://github.com/newgenrick" target="_blank">Newgenrick</a>. images courtesy to <a href="http://google.com/" target="_blank">Google</a>.</p>
+		<p>OOPs self study project .</p>
+</footer>
