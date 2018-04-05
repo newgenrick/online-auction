@@ -1,6 +1,39 @@
 <% include partials/header%>
 <br><br><br><br>
 
+<script>
+    
+    var end = new Date(<%=product.prod_posting_time.getTime()%> + <%=product.prod_auction_duration%>*60000);
+    var _second = 1000;
+    var _minute = _second * 60;
+    var _hour = _minute * 60;
+    var _day = _hour * 24;
+    var timer;
+
+    function showRemaining() {
+        var now = new Date();
+        var distance = end - now;
+        if (distance < 0) {
+
+            clearInterval(timer);
+            document.getElementById('timer').innerHTML = '<h3 style="color:red;">Auction Ended!!</h3>';
+
+            return;
+        }
+        var days = Math.floor(distance / _day);
+        var hours = Math.floor((distance % _day) / _hour);
+        var minutes = Math.floor((distance % _hour) / _minute);
+        var seconds = Math.floor((distance % _minute) / _second);
+
+        document.getElementById('countdown').innerHTML = days + ' Days ';
+        document.getElementById('countdown').innerHTML +=' : '+ hours + ' Hrs ';
+        document.getElementById('countdown').innerHTML +=' : '+ minutes + ' Mins ';
+        document.getElementById('countdown').innerHTML +=' : '+ seconds + ' Secs';
+    }
+
+    timer = setInterval(showRemaining, 1000);
+</script>
+
 <div class="container">
     <h3>
         <%=product.prod_name%>
@@ -20,28 +53,33 @@
                     <%=product.prod_desc%><br><br>
                     <strong>Auction duration : </strong><%=product.prod_auction_duration%><br>
                     <strong>Posting time : </strong><%=product.prod_posting_time%><br>
-                    <br><br>
-                    <a href="/products/<%= product._id %>/edit"  class="btn btn-sm btn-warning">Edit Product</a>
-                    <%if(!product.prod_bidder_list.length){%>
-                        <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;" >
-                            <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                    <br>
+                    <div id="timer">
+                        <strong>Auction ends in : </strong><div id="countdown"></div>
+                        <br>
+                        <a href="/products/<%= product._id %>/edit"  class="btn btn-sm btn-warning">Edit Product</a>
+                        <%if(!product.prod_bidder_list.length){%>
+                            <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;" >
+                                <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                            </form>
+                        <% }else{%>
+                                <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                        <% }%>
+                        <br><br><br>
+                        <form action = "/bid/<%= product._id%>?_method=PUT" method="POST" class="form-inline">
+                            <div>
+                                <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required class="form-group"> 
+                            </div>
+                            
+                            <button type="submit" class="btn btn-sm btn-success">Place Bid</button>
                         </form>
-                    <% }else{%>
-                            <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
-                    <% }%>
-                    <br><br><br>
-                    <form action = "/bid/<%= product._id%>?_method=PUT" method="POST" class="form-inline">
-                        <div>
-                            <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required class="form-group"> 
-                        </div>
-                        
-                        <button type="submit" class="btn btn-sm btn-success">Place Bid</button>
-                    </form>
+                    </div>
+                    
                 </div>
                 
             </div>
             
-            
+           
             
             <%if(product.prod_bidder_list.length){%>
                 <br><br>
