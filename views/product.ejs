@@ -57,22 +57,36 @@
                     <div id="timer">
                         <strong>Auction ends in : </strong><div id="countdown"></div>
                         <br>
-                        <a href="/products/<%= product._id %>/edit"  class="btn btn-sm btn-warning">Edit Product</a>
-                        <%if(!product.prod_bidder_list.length){%>
+                        <%if(currentUser){%>
+                        <%if(currentUser._id.equals(product.prod_owner_id)){%>
+                            <a href="/products/<%= product._id %>/edit"  class="btn btn-sm btn-warning">Edit Product</a>
+                            <%if(!product.prod_bidder_list.length){%>
                             <form action = "/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;" >
                                 <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
                             </form>
+                            <% }else{%>
+                                    <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                            <% }%>
+                            <br><br><br>
+                            <form action = "/bid/<%= product._id%>?_method=PUT" method="POST" class="form-inline">
+                                <div>
+                                    <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required class="form-group"> 
+                                </div>
+                                
+                                <button type="submit" class="btn btn-sm btn-success">Place Bid</button>
+                            </form>
+                        
                         <% }else{%>
-                                <button type="submit" class="btn-sm btn btn-danger">Delete product</button>
+                                <form action = "/bid/<%= product._id%>?_method=PUT" method="POST" class="form-inline">
+                                <div>
+                                    <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required class="form-group"> 
+                                </div>
+                                
+                                <button type="submit" class="btn btn-sm btn-success">Place Bid</button>
+                            </form>
                         <% }%>
-                        <br><br><br>
-                        <form action = "/bid/<%= product._id%>?_method=PUT" method="POST" class="form-inline">
-                            <div>
-                                <input type = "number" name="bid_value" placeholder="Enter bid here." min = <%= product.prod_current_price%> required class="form-group"> 
-                            </div>
-                            
-                            <button type="submit" class="btn btn-sm btn-success">Place Bid</button>
-                        </form>
+                    <% }%>
+                        
                     </div>
                     
                 </div>

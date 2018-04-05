@@ -1,14 +1,17 @@
 <% include partials/header%>
-<br><br><br><br>
+<br><br>
 <div class="container">
     
     <h2 class="text-center">Hello <%=user.username%></h2><hr>
     <div class="row">
         <div class="col-sm-7">
-            <h3>User Details :</h3>
+            <h3>User Details : </h3>
+            <h5>User ID : <%= user._id %></h5>
             User Name : <%= user.username %> <br>
             Email id  : <%= user.user_email%> <br>
             Wallet    : <%= user.user_wallet%> <br>
+            Account verification Status: <%=user.verified%><br>
+            
             <br><br>
         </div>
         <div class="col-sm-5">

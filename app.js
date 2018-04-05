@@ -7,7 +7,8 @@ var LocalStrategy         = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
 var methodOverride        = require("method-override");
 var session               = require("express-session");
-
+var nodemailer            = require('nodemailer');
+var flash                 = require("connect-flash")
 
 mongoose.connect("mongodb://localhost:/auctiondb");
 
@@ -57,13 +58,15 @@ var userSchema = new mongoose.Schema({
             }
         ],
     my_bid_values: [Number],
-    my_bid_time:[Date]
+    my_bid_time:[Date],
+    verified:Boolean
 });
 
 userSchema.plugin(passportLocalMongoose);
 
 var User = mongoose.model("User",userSchema);
 
+app.use(flash());
 app.use(require("express-session")({
     secret: "this is online auction",
     resave:false,
@@ -77,16 +80,78 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+
 app.use(function(req,res,next){
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.info = req.flash("info");
+    res.locals.success = req.flash("success");
     next();
 });
 
+var transporter = nodemailer.createTransport({
+ service: 'gmail',
+ auth: {
+        user: 'newgenrick@gmail.com',
+        pass: ''
+    }
+});
+
+// function isLoggedIn(req,res,next){
+    
+//     if(req.isAuthenticated()){
+//         User.findById(req.user._id,function(err, user) {
+//             if(err){
+//                 console.log("IS LOGGED IN ERROR USER");
+                
+//             }else{
+//                 if(!user.verified){
+//                     console.log("NOT VERIFIED\n\n"+user.verified+"\n\n"+user)
+//                     res.redirect("/products");
+                    
+//                 }else{
+//                     return next();
+//                 }
+                
+//             }
+//         })
+        
+//     }
+//     res.redirect("/login");
+// }
 function isLoggedIn(req,res,next){
     if(req.isAuthenticated()){
         return next();
     }
+    req.flash("error","Please Login to perform this operation.")
     res.redirect("/login");
+}
+function isVerified(req,res,next){
+    var flag =0;
+    User.findOne({username:req.body.username},function(err, user) {
+        if(err){
+            console.log(err);
+            
+        }else{
+            console.log(user.verified)
+            console.log(user)
+            var test = new Boolean(user.verified)
+            console.log("test"+test)
+            if(test){
+                // flag=1;
+                // console.log("IN HERE : FLAG = "+flag)
+                return next();
+            }else{
+                res.send("Not verified");
+            }
+        }
+    });
+    // flag = 1;
+    console.log(flag)
+    // if(flag==1){
+    //     return next();
+    // }
+    
 }
 
 function checkOwnership(req,res,next){
@@ -130,7 +195,16 @@ app.get("/products",function(req,res){
 });
 
 app.get("/products/new",isLoggedIn,function(req,res){
-    res.render("new_product.ejs");
+    User.findById(req.user._id,function(err, user) {
+        if(err){
+            console.log(err);
+        } else if(user.verified){
+            res.render("new_product.ejs");
+        }else{
+            res.render("not_verified.ejs")
+        }
+    });
+    
 });
 
 app.post("/products",isLoggedIn,function(req,res){
@@ -291,6 +365,8 @@ app.put("/bid/:id",isLoggedIn,function(req,res){
             
             if(req.body.bid_value>user.user_wallet){
                 console.log("Not enough balance");
+                req.flash("error","Your don't have enough money in your wallet. Take loan to proceed.");
+                            res.redirect("/user");
             
             }else{
                 Product.findById(req.params.id,function(err, product) {
@@ -309,6 +385,10 @@ app.put("/bid/:id",isLoggedIn,function(req,res){
                         var flag=0;
                         var i;
                         user.user_wallet = user.user_wallet - req.body.bid_value;
+                        if(user.user_wallet<0){
+                            req.flash("error","Your don't have enough money in your wallet. Take loan to proceed.");
+                            res.redirect("/user");
+                        }
                         if(user.my_bid_products.length){
                             for(i=0;i<user.my_bid_products.length;i++){
                                 if(user.my_bid_products[i].equals(req.params.id)){
@@ -378,16 +458,33 @@ app.get("/register",function(req, res) {
 app.post("/register",function(req,res){
     var newUser = new User({
         username:req.body.username,
-        
         user_email:req.body.email,
-        user_wallet:req.body.deposit
+        user_wallet:req.body.deposit,
+        verified:false
     });
     User.register(newUser,req.body.password,function(err,user){
         if(err){
-            console.log(err)
-            return res.render("register.ejs")
+            console.log(err);
+            req.flash("error",err.message);
+            return res.redirect("/register")
         }
         passport.authenticate("local")(req,res,function(){
+             var htmlMessage = '<h3>Hello '+ req.body.username+ ',</h3> <p>we are pleased to have you on board .<br>We the team at auction arena will make every possible effort to make your selling and bidding experience as seamless as possible.<h4>User ID : '+user._id+
+             '</h4><br><br>Thank you for registering<br><br>Click link to verify your profile : <a href="https://online-auction-newgenrick.c9users.io/verify/'+newUser._id+'">VERIFICATION LINK</a><br><br>Regards Abhishek<br><br>CEO Auction Arena</p>'
+             const mailOptions = {
+            
+              from: '"Auction Arena Admin" newgenrick@gmail.com', // sender address
+              to: req.body.email, // list of receivers
+              subject: 'Welcome Aboard', // Subject line
+              html: htmlMessage// plain text body
+            };
+            transporter.sendMail(mailOptions, function (err, info) {
+               if(err)
+                 console.log(err)
+               else
+                 console.log(info);
+            }); 
+            req.flash("info","Registered Successfully Complete verification by going to verification link sent to your email.")
             res.redirect("/products");
         });
     });
@@ -395,19 +492,25 @@ app.post("/register",function(req,res){
 
 app.get("/login",function(req, res) {
     res.render("login.ejs");
+   
 });
 
 app.post("/login",passport.authenticate("local",{
         successRedirect: "/products",
-        failureRedirect: "/login"
+        failureRedirect: "/login",
+        failureFlash: true,
+        successFlash: `Logged you in!`
     
     }),function(req,res){
+        
+        
     
 });
 app.get("/logout",function(req, res) {
     
     req.logout();
-    res.redirect("/");
+    req.flash("success","Successfully Logged out.")
+    res.redirect("/products");
 });
 
 app.get("/user",isLoggedIn,function(req,res){
@@ -433,8 +536,28 @@ app.post("/deposit",isLoggedIn,function(req,res){
                     console.log(err);
                 }else{
                     console.log(updatedUser);
+                    req.flash("info","Please Login to perform this operation.")
                     res.redirect("/user");
                 }
+            });
+        }
+    });
+});
+
+app.get("/verify/:id",function(req,res){
+    User.findById(req.params.id,function(err,user){
+        if(err){
+            console.log("cannot verify user.");
+            console.log(err);
+        }else{
+            user.verified = true;
+            User.findByIdAndUpdate(req.params.id,user,function(err, updatedUser) {
+               if(err){
+                   console.log(err);
+               }else{
+                   
+                   res.render("verify.ejs");
+               }
             });
         }
     });
